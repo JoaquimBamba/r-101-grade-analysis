@@ -20,3 +20,58 @@ grades<-here('grades.csv')
 grades<-read.csv(grades)
 
 ```
+
+### 2
+
+```{r}
+t<-grades|>select(Exam)|>summarize(max=max(Exam, na.rm = T), med=median(Exam, na.rm = T), min=min(Exam,na.rm=T))
+
+
+knitr::kable(t)
+
+
+```
+
+### 3
+
+```{r}
+
+absent<-grades|>select(Exam)|>
+  summarise(Nombre_NA = sum(is.na(Exam)))
+  
+
+
+```
+
+```         
+Il y avait `r absent` personnes absentes à l'examen
+```
+
+### 4
+
+```{r, message=F}
+
+library(ggplot2)
+
+
+exam_noNA<-grades|>select(Exam)|>na.omit()
+
+ggplot(exam_noNA, aes(x=Exam))+
+  geom_histogram(bin=30)+
+  xlab("grade")
+
+```
+
+### 5
+
+```{r}
+table<-grades %>% group_by(Group) %>% summarise(count=n())
+
+knitr::kable(table)
+```
+
+### 6
+
+```{r}
+
+```
