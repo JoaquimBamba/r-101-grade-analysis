@@ -105,8 +105,85 @@ ggplot(grades, aes(x = Group, y = Exam, fill=Group)) +
  
 ```
 
+```{r}
+
+```
+
 ### 8
 
 ```{r}
 
+missed_exam <- grades %>% filter(is.na(Exam))
+
+missed_exam_count<- missed_exam %>%
+  group_by(Group) %>%
+  summarise(Num_Missed_Exam = n())
+
+knitr::kable(missed_exam_count)
+```
+
+### 9
+
+```{r}
+ggplot(missed_exam_count, aes(x = Group, y = Num_Missed_Exam)) +
+  geom_col(stat = "identity", fill = "blue") +
+  xlab("Groupe") +
+  ylab("Nombre d'Absents") +
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### 10
+
+```{r}
+
+grades_long <- pivot_longer(grades, 
+                            cols = -c(Id, Group), #Colonnes d'identifiants (non pivotées)
+                            names_to = "name",  # Nouvelle colonne pour stocker les noms des colonnes pivotées
+                            values_to = "Values")# Nouvelle colonne pour stocker les valeurs pivotées
+
+grades_long
+```
+
+### 11
+
+```{r}
+
+missed_exam_stud <- grades_long %>% filter(is.na(Values))
+
+missed_exam_count_stud<- missed_exam_stud %>%
+  group_by(Id) %>%
+  summarise(Num_Missed_Exam_stud = n())
+
+knitr::kable(missed_exam_count_stud)
+
+```
+
+The students that missed no exam do not appear.
+
+### 12
+
+```{}
+```
+
+```{r}
+ggplot(missed_exam_count_stud, aes(x = Id, y = Num_Missed_Exam_stud)) +
+  geom_bar(stat = "identity", fill = "orange") +
+  xlab("student ID") +
+  ylab("Number of missed exams") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### 13
+
+```{r}
+
+missed_exam_long <- grades_long %>% filter(is.na(Values))
+
+missed_exam_count_long<- missed_exam %>%
+  group_by(Group) %>%
+  summarise(Num_Missed_Exam = n())
+
+knitr::kable(missed_exam_count_long)
 ```
