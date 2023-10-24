@@ -104,3 +104,9 @@ ggplot(grades, aes(x = Group, y = Exam, fill=Group)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
  
 ```
+
+### 8
+
+```{r}
+
+```
