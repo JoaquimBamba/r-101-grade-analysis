@@ -163,7 +163,7 @@ The students that missed no exam do not appear.
 
 ### 12
 
-```{}
+```         
 ```
 
 ```{r}
@@ -187,3 +187,118 @@ missed_exam_count_long<- missed_exam %>%
 
 knitr::kable(missed_exam_count_long)
 ```
+
+### 14
+
+```{r}
+
+library(stringr)
+
+```
+
+```{r}
+missed_online_stud<-grades_long|>filter(str_starts(name,'Online'))|> filter(is.na(Values))
+
+missed_online_count_stud<- missed_online_stud %>%
+  group_by(Id) %>%
+  summarise(Num_Missed_online_stud = n())
+
+knitr::kable(missed_online_count_stud)
+
+
+```
+
+We can spot that the students are more likely to miss a online exam.
+
+### 15
+
+```{r}
+exam_stud 
+missed_online_count_stud
+```
+
+```{r}
+exam_stud<-grades_long|>filter(name=="Exam") |>select(Id,Values)|>arrange(Id)#df avec les notes par étudiant triés par id croissant comme à la question précédente.
+
+df<-merge(exam_stud,missed_online_count_stud, by="Id")
+
+df
+
+```
+
+We now have a dataframe df counting the number of missed online exam and the final exam grade per student.
+
+Let's do the representation :
+
+```{r}
+
+ggplot(df, aes(x = Num_Missed_online_stud, y = Values, color=Values)) +
+  geom_point()+
+  xlab("Number of missed online exam")+
+  ylab("Exam grade")
+```
+
+In this graph, students are grouped by the number of online exam they have missed.
+
+We can clearly spot that the more online exams are missed, the more the distribution of final exam grades is concentrated between 0 and 10.
+
+### 16
+
+Starting from the original data set, we add a column Missed (True if there is a NA in the line for each student).
+
+We take into account every grade including the online ones.
+
+Then we order the new data frame by Id.
+
+```{r}
+df2<-grades %>%
+  mutate(Missed = rowSums(is.na(.)) > 0)|>group_by(Id)|>arrange(Id)
+
+df2
+
+table<-df2|>select(Id,Missed)
+
+knitr::kable(table)
+
+```
+
+### 17
+
+```{r}
+df_P_missed<-df2|>select(Id, Group, Missed)|>group_by(Group)|>summarize(P_missed = mean(Missed == TRUE) * 100)
+
+knitr::kable(df_P_missed)
+```
+
+### 18
+
+```{r}
+
+
+#We create a df with the average exam grade per group.
+
+df_mean<-df2|>select(Id, Group, Exam)|>group_by(Group)|>summarize(mean_exam = mean(Exam, na.rm = TRUE))
+
+
+```
+
+```{r}
+
+#we create a df with the two variable of interest :
+
+df3<-cbind(df_mean,df_P_missed[2])
+
+#We do the plot
+
+
+df3
+
+ggplot(df3, aes(x = P_missed, y = mean_exam, color=mean_exam)) +
+  geom_point()+
+  xlab("P_missed")+
+  ylab("mean exam group")
+
+
+```
+
+Once again, we can spot that the higer pourcentage of people having missed at least one exam is, the more the distribution of the mean per group is concentrated between 0 and 8.
