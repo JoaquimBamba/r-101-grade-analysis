@@ -4,26 +4,26 @@ format: html
 editor: visual
 ---
 
-## 
+## Grade analysis
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 library(here)
 library(dplyr)
 library(tidyr)
 ```
 
-### 1
+### 1)
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 here::i_am('r-101-grade-analysis.Rproj')
 grades<-here('grades.csv')
 grades<-read.csv(grades)
 
 ```
 
-### 2
+### 2)
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 t<-grades|>select(Exam)|>summarize(max=max(Exam, na.rm = T), med=median(Exam, na.rm = T), min=min(Exam,na.rm=T))
 
 
@@ -32,9 +32,9 @@ knitr::kable(t)
 
 ```
 
-### 3
+### 3)
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 
 absent<-grades|>select(Exam)|>
   summarise(Nombre_NA = sum(is.na(Exam)))
@@ -47,9 +47,9 @@ absent<-grades|>select(Exam)|>
 Il y avait `r absent` personnes absentes à l'examen
 ```
 
-### 4
+### 4)
 
-```{r, message=F}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 
 library(ggplot2)
 
@@ -62,17 +62,17 @@ ggplot(exam_noNA, aes(x=Exam))+
 
 ```
 
-### 5
+### 5)
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 table<-grades %>% group_by(Group) %>% summarise(count=n())
 
 knitr::kable(table)
 ```
 
-### 6
+### 6)
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 
 
 
@@ -82,9 +82,9 @@ ggplot(grades, aes(x=Group))+
   theme(axis.text.x=element_text(angle = 45,hjust=1))
 ```
 
-## 7
+### 7)
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 
 ggplot(grades, aes(x=Exam))+
   geom_histogram(bin=30)+
@@ -94,10 +94,7 @@ ggplot(grades, aes(x=Exam))+
 
 ```
 
-```         
-```
-
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 ggplot(grades, aes(x = Group, y = Exam, fill=Group)) +
   geom_boxplot() +
   xlab("Groupe") +
@@ -105,13 +102,9 @@ ggplot(grades, aes(x = Group, y = Exam, fill=Group)) +
  
 ```
 
-```{r}
+### 8)
 
-```
-
-### 8
-
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 
 missed_exam <- grades %>% filter(is.na(Exam))
 
@@ -122,9 +115,9 @@ missed_exam_count<- missed_exam %>%
 knitr::kable(missed_exam_count)
 ```
 
-### 9
+### 9)
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 ggplot(missed_exam_count, aes(x = Group, y = Num_Missed_Exam)) +
   geom_col(stat = "identity", fill = "blue") +
   xlab("Groupe") +
@@ -133,22 +126,21 @@ ggplot(missed_exam_count, aes(x = Group, y = Num_Missed_Exam)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-### 10
+### 10)
 
-```{r}
-
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 grades_long <- pivot_longer(grades, 
                             cols = -c(Id, Group), #Colonnes d'identifiants (non pivotées)
                             names_to = "name",  # Nouvelle colonne pour stocker les noms des colonnes pivotées
                             values_to = "Values")# Nouvelle colonne pour stocker les valeurs pivotées
 
-grades_long
+
+knitr::kable(grades_long)
 ```
 
-### 11
+### 11)
 
-```{r}
-
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 missed_exam_stud <- grades_long %>% filter(is.na(Values))
 
 missed_exam_count_stud<- missed_exam_stud %>%
@@ -161,12 +153,9 @@ knitr::kable(missed_exam_count_stud)
 
 The students that missed no exam do not appear.
 
-### 12
+### 12)
 
-```         
-```
-
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 ggplot(missed_exam_count_stud, aes(x = Id, y = Num_Missed_Exam_stud)) +
   geom_bar(stat = "identity", fill = "orange") +
   xlab("student ID") +
@@ -175,10 +164,9 @@ ggplot(missed_exam_count_stud, aes(x = Id, y = Num_Missed_Exam_stud)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-### 13
+### 13)
 
-```{r}
-
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 missed_exam_long <- grades_long %>% filter(is.na(Values))
 
 missed_exam_count_long<- missed_exam %>%
@@ -188,15 +176,15 @@ missed_exam_count_long<- missed_exam %>%
 knitr::kable(missed_exam_count_long)
 ```
 
-### 14
+### 14)
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 
 library(stringr)
 
 ```
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 missed_online_stud<-grades_long|>filter(str_starts(name,'Online'))|> filter(is.na(Values))
 
 missed_online_count_stud<- missed_online_stud %>%
@@ -210,19 +198,14 @@ knitr::kable(missed_online_count_stud)
 
 We can spot that the students are more likely to miss a online exam.
 
-### 15
+### 15)
 
-```{r}
-exam_stud 
-missed_online_count_stud
-```
-
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 exam_stud<-grades_long|>filter(name=="Exam") |>select(Id,Values)|>arrange(Id)#df avec les notes par étudiant triés par id croissant comme à la question précédente.
 
 df<-merge(exam_stud,missed_online_count_stud, by="Id")
 
-df
+knitr::kable(df)
 
 ```
 
@@ -230,7 +213,7 @@ We now have a dataframe df counting the number of missed online exam and the fin
 
 Let's do the representation :
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 
 ggplot(df, aes(x = Num_Missed_online_stud, y = Values, color=Values)) +
   geom_point()+
@@ -242,7 +225,7 @@ In this graph, students are grouped by the number of online exam they have misse
 
 We can clearly spot that the more online exams are missed, the more the distribution of final exam grades is concentrated between 0 and 10.
 
-### 16
+### 16)
 
 Starting from the original data set, we add a column Missed (True if there is a NA in the line for each student).
 
@@ -250,11 +233,11 @@ We take into account every grade including the online ones.
 
 Then we order the new data frame by Id.
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 df2<-grades %>%
   mutate(Missed = rowSums(is.na(.)) > 0)|>group_by(Id)|>arrange(Id)
 
-df2
+#df2
 
 table<-df2|>select(Id,Missed)
 
@@ -262,17 +245,18 @@ knitr::kable(table)
 
 ```
 
-### 17
+### 17)
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+
 df_P_missed<-df2|>select(Id, Group, Missed)|>group_by(Group)|>summarize(P_missed = mean(Missed == TRUE) * 100)
 
 knitr::kable(df_P_missed)
 ```
 
-### 18
+### 18)
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 
 
 #We create a df with the average exam grade per group.
@@ -282,7 +266,7 @@ df_mean<-df2|>select(Id, Group, Exam)|>group_by(Group)|>summarize(mean_exam = me
 
 ```
 
-```{r}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 
 #we create a df with the two variable of interest :
 
@@ -291,7 +275,7 @@ df3<-cbind(df_mean,df_P_missed[2])
 #We do the plot
 
 
-df3
+#df3
 
 ggplot(df3, aes(x = P_missed, y = mean_exam, color=mean_exam)) +
   geom_point()+
