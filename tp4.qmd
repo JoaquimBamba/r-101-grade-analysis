@@ -302,3 +302,5 @@ ggplot(df3, aes(x = P_missed, y = mean_exam, color=mean_exam)) +
 ```
 
 Once again, we can spot that the higer pourcentage of people having missed at least one exam is, the more the distribution of the mean per group is concentrated between 0 and 8.
+
+We could even pretend to see a negative linear correlation between these two variables.
